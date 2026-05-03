@@ -26,7 +26,7 @@ class BrainTumorDataset(Dataset):
             return None, None  # Return None for both image and label if there's an error
 
         # Normalize the image to [0, 1]
-        image = (image - np.min(image)) / (np.max(image) - np.min(image))
+        image = (image - image.min()) / (image.max() - image.min())
 
         # Convert to torch tensors
         image = image.float()  # Add channel dimension
