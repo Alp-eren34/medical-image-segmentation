@@ -1,2 +1,11 @@
 data/
 venv/
+models/best_model.pth
+__pycache__/
+*.pyc
+*.pth
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+.env

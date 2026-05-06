@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import os
 
 from src.model import UNet
 
-def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learning_rate=0.001):
+def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learning_rate=0.001, save_path=r"D:\Projects\medical-image-segmentation\models\best_model.pth"):
     best_val_loss = float('inf')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -16,7 +17,7 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-
+    os.makedirs("models", exist_ok=True)
     for epoch in range(num_epochs):
         model.train()
 
@@ -54,7 +55,6 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
         print(f"Epoch: {epoch+1}/{num_epochs} | Average Loss: {average_epoch_loss:.4f}")
         if average_val_loss < best_val_loss:
             best_val_loss = average_val_loss
-            torch.save(model.state_dict(), f"models/best_model.pth")
+            torch.save(model.state_dict(), save_path)
 
     return model
-
