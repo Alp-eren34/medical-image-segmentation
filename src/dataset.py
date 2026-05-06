@@ -21,7 +21,7 @@ class BrainTumorDataset(Dataset):
                                     torch.from_numpy(nib.load(hastalar['t1ce']).get_fdata()),
                                     torch.from_numpy(nib.load(hastalar['t2']).get_fdata())], dim=0)
             label = torch.from_numpy(nib.load(hastalar['seg']).get_fdata())
-
+            label[label ==4 ] = 3  # Map label 4 to 3
             dilim_index = np.random.randint(0, 155)
             image = image[:, :, :, dilim_index]  # (4, 240, 240)
             label = label[:, :, dilim_index]  # (240, 240) 
@@ -30,7 +30,7 @@ class BrainTumorDataset(Dataset):
             return None, None  # Return None for both image and label if there's an error
 
         # Normalize the image to [0, 1]
-        image = (image - image.min()) / (image.max() - image.min())
+        image = (image - image.min() + 1e-8) / (image.max() - image.min() + 1e-8)
 
         # Convert to torch tensors
         image = image.float()  # Add channel dimension

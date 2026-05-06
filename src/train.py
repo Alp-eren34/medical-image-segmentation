@@ -5,6 +5,7 @@ import torch.optim as optim
 from src.model import UNet
 
 def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learning_rate=0.001):
+    best_val_loss = float('inf')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
@@ -32,8 +33,9 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
 
             epoch_loss += loss.item()
 
-            if batch_idx % 10 == 0:
+            if (batch_idx) % 10 == 0:
                 print(f"Epoch: {epoch+1}/{num_epochs} | Batch: {batch_idx}/{len(train_loader)} | Loss: {loss.item():.4f}")
+            
         
         model.eval()
         with torch.no_grad():
@@ -50,3 +52,9 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
 
         average_epoch_loss = epoch_loss / len(train_loader)
         print(f"Epoch: {epoch+1}/{num_epochs} | Average Loss: {average_epoch_loss:.4f}")
+        if average_val_loss < best_val_loss:
+            best_val_loss = average_val_loss
+            torch.save(model.state_dict(), f"models/best_model.pth")
+
+    return model
+
