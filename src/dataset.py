@@ -22,7 +22,7 @@ class BrainTumorDataset(Dataset):
                                     torch.from_numpy(nib.load(hastalar['t2']).get_fdata())], dim=0)
             label = torch.from_numpy(nib.load(hastalar['seg']).get_fdata())
 
-            dilim_index = np.random.randint(0, 155) # 155 dilim olduğunu varsayıyoruz
+            dilim_index = np.random.randint(0, 155)
             image = image[:, :, :, dilim_index]  # (4, 240, 240)
             label = label[:, :, dilim_index]  # (240, 240) 
         except Exception as e:
