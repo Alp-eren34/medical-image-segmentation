@@ -4,16 +4,18 @@ import torch.optim as optim
 
 from src.model import UNet
 
-def train(train_loader):
+def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learning_rate=0.001):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    model = UNet(in_channels=4, out_channels=4).to(device)
+    model = model.to(device)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    num_epochs = 10
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+
     for epoch in range(num_epochs):
         model.train()
 
@@ -32,6 +34,19 @@ def train(train_loader):
 
             if batch_idx % 10 == 0:
                 print(f"Epoch: {epoch+1}/{num_epochs} | Batch: {batch_idx}/{len(train_loader)} | Loss: {loss.item():.4f}")
+        
+        model.eval()
+        with torch.no_grad():
+            val_loss = 0.0
+            for val_images, val_labels in val_loader:
+                val_images = val_images.to(device)
+                val_labels = val_labels.to(device)
 
-        ortalama_epoch_loss = epoch_loss / len(train_loader)
-        print(f"Epoch: {epoch+1}/{num_epochs} | Average Loss: {ortalama_epoch_loss:.4f}")
+                val_outputs = model(val_images)
+                val_loss += criterion(val_outputs, val_labels).item()
+
+            average_val_loss = val_loss / len(val_loader)
+            print(f"Epoch: {epoch+1}/{num_epochs} | Batch: {batch_idx}/{len(train_loader)} | Loss: {loss.item():.4f} | Val Loss: {average_val_loss:.4f}")
+
+        average_epoch_loss = epoch_loss / len(train_loader)
+        print(f"Epoch: {epoch+1}/{num_epochs} | Average Loss: {average_epoch_loss:.4f}")
