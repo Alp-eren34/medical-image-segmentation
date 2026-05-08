@@ -12,7 +12,7 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
 
     model = model.to(device)
 
-    criterion = nn.CrossEntropyLoss(weight=torch.tensor([0.1, 5.0, 3.0, 4.0]).to(device))  # Adjust weights for class imbalance
+    criterion = nn.CrossEntropyLoss(weight=torch.tensor([0.1, 5.0, 3.0, 4.9]).to(device))  # Adjust weights for class imbalance
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
