@@ -5,7 +5,7 @@ import os
 
 from src.model import UNet
 
-def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learning_rate=0.001, save_path=r"D:\Projects\medical-image-segmentation\models\best_model.pth"):
+def train(train_dataset, val_dataset, model, num_epochs=10,num_workers=0 ,batch_size=16 ,learning_rate=0.001, save_path=r"D:\Projects\medical-image-segmentation\models\best_model.pth"):
     best_val_loss = float('inf')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -15,8 +15,8 @@ def train(train_dataset, val_dataset, model, num_epochs=10, batch_size=16, learn
     criterion = nn.CrossEntropyLoss(weight=torch.tensor([0.1, 5.0, 3.0, 4.9]).to(device))  # Adjust weights for class imbalance
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size ,shuffle=True, num_workers=num_workers)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     os.makedirs("models", exist_ok=True)
     for epoch in range(num_epochs):
         model.train()

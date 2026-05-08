@@ -12,9 +12,9 @@ class BrainTumorDataset(Dataset):
 
         start_slice=15
         end_slice=140
-        slice_count = 10
+        slice_count = 5
         
-        secilecek_indeksler = np.linspace(start_slice, end_slice, slice_count, dtype=int) # 15 ile 140 arasında 10 dilim seçmek için
+        secilecek_indeksler = np.linspace(start_slice, end_slice, slice_count, dtype=int) # 15 ile 140 arasında 5 dilim seçmek için
         for hasta in self.hastalar:
             for dilim_index in secilecek_indeksler:
                 self.ornekler.append((hasta, dilim_index))
