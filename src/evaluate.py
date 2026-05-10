@@ -1,7 +1,3 @@
-from src.model import UNet
-from src.dataset import BrainTumorDataset
-from src.train import train
-import os
 import torch    
 
 def dice_coefficient(pred, target, smooth=1e-8):

@@ -19,7 +19,7 @@ class DoubleConv(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, in_channels=4, out_channels=2):
+    def __init__(self, in_channels=4, out_channels=4):
         super(UNet, self).__init__()
         self.max_pool_2x2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.down_conv_1 = DoubleConv(in_channels, 64)
